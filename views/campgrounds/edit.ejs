@@ -1,16 +1,65 @@
 <% layout('layouts/boilerplate')%>
 
-<a href="/campgrounds/<%=camp.id%>">go back to campground</a>
-<h1>Edit campground</h1>
-<form action="/campgrounds/<%=camp.id%>/edit?_method=PATCH" method="POST">
-	<div>
-		<label for="title">Name</label>
-		<input value="<%=camp.title%>" id="title" name="campground[title]" type="text" />
-	</div>
-	<div>
-		<label for="location">Location</label>
-		<input value="<%=camp.location%>" id="location" name="campground[location]" type="text" />
-	</div>
+<div class="max-w-4xl mx-auto">
+	<a class="underline color text-blue-500 mb-5 block" href="/campgrounds/<%=camp.id%>">Go back to campground</a>
+	<h1 class="text-2xl">Edit campground</h1>
 
-	<button>edit campground</button>
-</form>
+	<form class="mt-5" action="/campgrounds/<%=camp.id%>/edit?_method=PATCH" method="POST">
+		<label class="text-xl font-medium mb-1 block" for="image">Image url</label>
+		<input
+			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
+			value="<%= camp.image%>"
+			id="image"
+			name="campground[image]"
+			type="text"
+		/>
+
+		<label class="text-xl font-medium mb-1 block mt-5" for="title">Name</label>
+		<input
+			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
+			value="<%=camp.title%>"
+			id="title"
+			name="campground[title]"
+			type="text"
+		/>
+
+		<label class="text-xl font-medium mb-1 block mt-5" for="location">Location</label>
+		<input
+			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
+			value="<%=camp.location%>"
+			id="location"
+			name="campground[location]"
+			type="text"
+		/>
+
+		<label class="text-xl font-medium mb-1 block mt-5" for="location">Description</label>
+		<textarea
+			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500 min-h-44 h-auto"
+			value="<%=camp.location%>"
+			id="description"
+			name="campground[description]"
+			type="text"
+		>
+<%= camp.description%></textarea
+		>
+		<label class="text-xl font-medium mb-1 block mt-5" for="price">Price</label>
+		<div class="relative">
+			<input
+				class="ps-9 pe-16 bock border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
+				id="price"
+				name="campground[price]"
+				type="number"
+				step="0.05"
+				value="<%=camp.price	%>"
+			/>
+			<div class="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
+				<span class="text-gray-500 dark:text-neutral-500">€</span>
+			</div>
+			<div class="absolute inset-y-0 end-0 flex items-center pointer-events-none z-20 pe-4">
+				<span class="text-gray-500 dark:text-neutral-500">EUR</span>
+			</div>
+		</div>
+
+		<button class="text-sm text-white rounded-md inline-block mt-8 px-4 py-2 bg-orange-400 hover:bg-orange-500">edit campground</button>
+	</form>
+</div>

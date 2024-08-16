@@ -56,6 +56,8 @@ app.get("/campgrounds/:id/edit", async (req, res) => {
 		res.render("campgrounds/edit", { camp });
 	} catch (err) {
 		console.log("nothing with this id");
+	} finally {
+		console.log("GET / /campgrounds/:id/edit /");
 	}
 });
 
@@ -65,7 +67,10 @@ app.patch("/campgrounds/:id/edit", async (req, res) => {
 		await Campground.findByIdAndUpdate(id, req.body.campground);
 	} catch (err) {
 		console.log("nothing with this id");
+	} finally {
+		console.log("PATCH / /campgrounds/:id/edit /");
 	}
+
 	res.redirect("/campgrounds");
 });
 
@@ -77,6 +82,8 @@ app.get("/campgrounds/:id", async (req, res) => {
 		res.render("campgrounds/show", { camp });
 	} catch (err) {
 		console.log("nothing with this id");
+	} finally {
+		console.log("GET / /campgrounds/:id /");
 	}
 });
 

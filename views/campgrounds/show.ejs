@@ -1,11 +1,23 @@
 <% layout('layouts/boilerplate')%>
 
-<a href="/campgrounds">Go back to overview</a>
-<h1><%= camp.title %></h1>
-<h2>in <%= camp.location %></h2>
-<a href="/campgrounds/<%= camp.id %>/edit">Edit campground</a>
-<span>/</span>
+<div class="max-w-4xl mx-auto">
+	<a class="underline color text-blue-500 mb-5 block" href="/campgrounds">Go back to overview</a>
+	<div class="flex justify-between items-end">
+		<div>
+			<h1 class="font-semibold text-3xl"><%= camp.title %></h1>
+			<h2 class="font-semibold text-lg">in <%= camp.location %></h2>
+		</div>
+		<h1 class="text-3xl font-semibold">€<%= camp.price %> <span class="font-normal text-sm text-gray-400">p.day</span></h1>
+	</div>
+	<img class="block mt-5 rounded-lg w-full max-h-96 object-bottom object-cover" src="<%= camp.image%>" alt="" />
 
-<form action="/campgrounds/<%= camp.id %>?_method=DELETE" method="POST">
-	<button>Delete campgroun</button>
-</form>
+	<h3 class="mt-5 font-bold text-lg">About the camp</h3>
+	<p class="mt-5 leading-7 text-sm pb-5"><%= camp.description%></p>
+
+	<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-orange-400 hover:bg-orange-500" href="/campgrounds/<%= camp.id %>/edit"
+		>Edit campground</a
+	>
+	<form class="inline-block" action="/campgrounds/<%= camp.id %>?_method=DELETE" method="POST">
+		<button class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-red-500 hover:bg-red-600">Delete campground</button>
+	</form>
+</div>

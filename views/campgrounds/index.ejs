@@ -1,11 +1,18 @@
 <% layout('layouts/boilerplate')%>
 
-<a href="/campgrounds/new">Add a new campground</a>
-<h1>Display Campgrounds</h1>
+<div class="max-w-4xl mx-auto">
+	<h1 class="text-3xl">Overview</h1>
 
-<ul>
 	<% for (const camp of campgrounds) { %>
-	<li><a href="/campgrounds/<%= camp.id%>"><%= camp.title %></a></li>
-
+	<!-- <li><a class="underline color text-blue-500" href="/campgrounds/<%= camp.id%>"><%= camp.title %></a></li> -->
+	<div class="flex gap-x-9 overflow-hidden mt-8">
+		<img class="w-80 h-auto rounded-lg" src="<%=camp.image%>" alt="" />
+		<div class="pt-2">
+			<h1 class="text-2xl"><%= camp.title%></h1>
+			<h3 class="mt-1 text-sm"><%= camp.location%></h3>
+			<p class="mt-2 text-xs text-gray-500 leading-5"><%= camp.description.substr(0, 255)%></p>
+			<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600" href="/campgrounds/<%=camp.id%>">See Camp</a>
+		</div>
+	</div>
 	<% } %>
-</ul>
+</div>

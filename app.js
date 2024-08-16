@@ -71,7 +71,7 @@ app.patch("/campgrounds/:id/edit", async (req, res) => {
 		console.log("PATCH / /campgrounds/:id/edit /");
 	}
 
-	res.redirect("/campgrounds");
+	res.redirect(`/campgrounds/${id}`);
 });
 
 // Show specific campground

@@ -13,10 +13,7 @@
 
 	<h3 class="mt-5 font-bold text-lg">About the camp</h3>
 	<p class="mt-5 leading-7 text-sm pb-5"><%= camp.description%></p>
-
-	<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-orange-400 hover:bg-orange-500" href="/campgrounds/<%= camp.id %>/edit"
-		>Edit campground</a
-	>
+	<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-orange-400 hover:bg-orange-500" href="/campgrounds/<%= camp.id %>/edit">Edit campground</a>
 	<form class="inline-block" action="/campgrounds/<%= camp.id %>?_method=DELETE" method="POST">
 		<button class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-red-500 hover:bg-red-600">Delete campground</button>
 	</form>

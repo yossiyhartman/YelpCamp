@@ -4,62 +4,70 @@
 	<a class="underline color text-blue-500 mb-5 block" href="/campgrounds/<%=camp.id%>">Go back to campground</a>
 	<h1 class="text-2xl">Edit campground</h1>
 
-	<form class="mt-5" action="/campgrounds/<%=camp.id%>/edit?_method=PATCH" method="POST">
-		<label class="text-xl font-medium mb-1 block" for="image">Image url</label>
-		<input
-			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
-			value="<%= camp.image%>"
-			id="image"
-			name="campground[image]"
-			type="text"
-		/>
+	<form id="editCampgroundsForm" class="mt-5" action="/campgrounds/<%=camp.id%>/edit?_method=PATCH" method="POST" novalidate>
+		<div>
+			<label class="text-xl font-medium mb-1 block" for="image">Image url</label>
+			<input value="<%=camp.image%>" required class="peer rounded ring-1 focus:ring-2 ring-blue-500 w-full px-2 py-2 text-gray-500 [.validated_&]:invalid:ring-red-500" id="image" name="campground[image]" type="text" />
+			<p class="hidden [.validated_&]:peer-invalid:block px-2 mt-1 text-xs text-red-500">please provide a image url</p>
+		</div>
 
-		<label class="text-xl font-medium mb-1 block mt-5" for="title">Name</label>
-		<input
-			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
-			value="<%=camp.title%>"
-			id="title"
-			name="campground[title]"
-			type="text"
-		/>
+		<div>
+			<label class="text-xl font-medium mb-1 block mt-5" for="title">Name</label>
+			<input value="<%=camp.title%>" required class="peer rounded ring-1 focus:ring-2 ring-blue-500 w-full px-2 py-2 text-gray-500 [.validated_&]:invalid:ring-red-500" id="title" name="campground[title]" type="text" />
+			<p class="hidden [.validated_&]:peer-invalid:block px-2 mt-1 text-xs text-red-500">please provide a name</p>
+		</div>
 
-		<label class="text-xl font-medium mb-1 block mt-5" for="location">Location</label>
-		<input
-			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
-			value="<%=camp.location%>"
-			id="location"
-			name="campground[location]"
-			type="text"
-		/>
+		<div>
+			<label class="text-xl font-medium mb-1 block mt-5" for="location">Location</label>
+			<input value="<%=camp.location%>" required class="peer rounded ring-1 focus:ring-2 ring-blue-500 w-full px-2 py-2 text-gray-500 [.validated_&]:invalid:ring-red-500" id="location" name="campground[location]" type="text" />
+			<p class="hidden [.validated_&]:peer-invalid:block px-2 mt-1 text-xs text-red-500">please provide a location</p>
+		</div>
 
-		<label class="text-xl font-medium mb-1 block mt-5" for="location">Description</label>
-		<textarea
-			class="block border border-blue-500 w-full px-2 py-2 rounded text-gray-500 min-h-44 h-auto"
-			value="<%=camp.location%>"
-			id="description"
-			name="campground[description]"
-			type="text"
-		>
-<%= camp.description%></textarea
-		>
-		<label class="text-xl font-medium mb-1 block mt-5" for="price">Price</label>
-		<div class="relative">
-			<input
-				class="ps-9 pe-16 bock border border-blue-500 w-full px-2 py-2 rounded text-gray-500"
-				id="price"
-				name="campground[price]"
-				type="number"
-				step="0.05"
-				value="<%=camp.price	%>"
-			/>
-			<div class="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
-				<span class="text-gray-500 dark:text-neutral-500">€</span>
-			</div>
-			<div class="absolute inset-y-0 end-0 flex items-center pointer-events-none z-20 pe-4">
-				<span class="text-gray-500 dark:text-neutral-500">EUR</span>
+		<div>
+			<label class="text-xl font-medium mb-1 block mt-5" for="location">Description</label>
+			<textarea required class="peer rounded ring-1 focus:ring-2 ring-blue-500 w-full px-2 py-2 text-gray-500 [.validated_&]:invalid:ring-red-500 min-h-44 h-auto" id="description" name="campground[description]" type="text">
+<%=camp.description%></textarea
+			>
+			<p class="hidden [.validated_&]:peer-invalid:block px-2 mt-1 text-xs text-red-500">please provide a description</p>
+		</div>
+
+		<div>
+			<label class="text-xl font-medium mb-1 block mt-5" for="price">Price</label>
+			<div class="relative">
+				<input
+					value="<%=camp.price%>"
+					required
+					class="ps-9 pe-16 peer rounded ring-1 focus:ring-2 ring-blue-500 w-full px-2 py-2 text-gray-500 [.validated_&]:invalid:ring-red-500"
+					id="price"
+					name="campground[price]"
+					type="number"
+					step="0.05"
+					placeholder="0.00"
+				/>
+				<p class="hidden [.validated_&]:peer-invalid:block px-2 mt-1 text-xs text-red-500">please provide a price</p>
+
+				<div class="absolute top-2 start-4 flex items-center pointer-events-none z-20">
+					<span class="text-gray-500 dark:text-neutral-500">€</span>
+				</div>
+
+				<div class="absolute top-2 end-4 flex items-center pointer-events-none z-20">
+					<span class="text-gray-500 dark:text-neutral-500">EUR</span>
+				</div>
 			</div>
 		</div>
 
 		<button class="text-sm text-white rounded-md inline-block mt-8 px-4 py-2 bg-orange-400 hover:bg-orange-500">edit campground</button>
 	</form>
 </div>
+
+<script>
+	const form = document.getElementById("editCampgroundsForm");
+
+	form.addEventListener("submit", (e) => {
+		if (!form.checkValidity()) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		form.classList.add("validated");
+	});
+</script>

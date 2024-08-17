@@ -1,0 +1,8 @@
+<% layout('layouts/boilerplate')%>
+
+<div class="w-1/2 mx-auto min-h-32 p-8 bg-red-200">
+	<h class="text-3xl text-red-700 font-semibold"><%= err.message %></h>
+	<p class="mt-4">Tough luck lad.. Probably wise to look at another page that does work</p>
+	<div class="my-8 border border-gray-200"></div>
+	<p class="mt-4"><%= err.stack%></p>
+</div>

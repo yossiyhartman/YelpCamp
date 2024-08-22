@@ -1,13 +1,22 @@
+// Mongo
 const mongoose = require("mongoose");
+
+// Express
 const express = require("express");
 const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError");
-const Campground = require("./models/camgrounds");
-const Joi = require("joi");
-const { campgroundSchema } = require("./schemas");
 
+// Modles
+const Campground = require("./models/camgrounds");
+const Review = require("./models/reviews");
+
+// Validation schemas
+const Joi = require("joi");
+const { campgroundValSchema, reviewValSchema, validateForm } = require("./validationSchemas");
+
+// Mongo Connect
 mongoose.connect("mongodb://127.0.0.1:27017/Yelpcamp");
 
 mongoose.connection.on("error", console.error.bind(console, "connection error:"));
@@ -18,27 +27,35 @@ mongoose.connection.once("open", () => {
 const app = express();
 const port = 3000;
 
-// configuration
+// Express configuration
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Middleware
+// Initial Middleware configuration
 app.use(express.static("js"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const validateCampgroun = (req, res, next) => {
-	const { error } = campgroundSchema.validate(req.body);
+// const validateCampgroun = (req, res, next) => {
+// 	const { error } = campgroundSchema.validate(req.body);
 
-	if (error) {
-		const msg = error.details.map((e) => e.message).join(", ");
-		throw new ExpressError(msg, 400);
-	}
+// 	if (error) {
+// 		const msg = error.details.map((e) => e.message).join(", ");
+// 		throw new ExpressError(msg, 400);
+// 	}
 
-	next();
-};
+// 	next();
+// };
+
+//////////////////
+// Routes
+//////////////////
+
+//////////////////
+// Campgrounds
+//////////////////
 
 // homepage
 app.get("/", (req, res) => {
@@ -61,7 +78,7 @@ app.get("/campgrounds/new", (req, res) => {
 });
 
 // Create campground
-app.post("/campgrounds/new", validateCampgroun, async (req, res, next) => {
+app.post("/campgrounds/new", validateForm(campgroundValSchema), async (req, res, next) => {
 	try {
 		await Campground.create(req.body.campground);
 		res.redirect("/campgrounds");
@@ -82,7 +99,7 @@ app.get("/campgrounds/:id/edit", async (req, res, next) => {
 });
 
 // Update campground
-app.patch("/campgrounds/:id/edit", validateCampgroun, async (req, res, next) => {
+app.patch("/campgrounds/:id/edit", validateForm(campgroundValSchema), async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		await Campground.findByIdAndUpdate(id, req.body.campground);
@@ -96,7 +113,7 @@ app.patch("/campgrounds/:id/edit", validateCampgroun, async (req, res, next) => 
 app.get("/campgrounds/:id", async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		const camp = await Campground.findById(id);
+		const camp = await Campground.findById(id).populate("reviews");
 		res.render("campgrounds/show", { camp });
 	} catch (err) {
 		next(err);
@@ -113,6 +130,39 @@ app.delete("/campgrounds/:id", async (req, res, next) => {
 		next(err);
 	}
 });
+
+//////////////////
+// Reviews
+//////////////////
+
+app.post("/campgrounds/:id/reviews", validateForm(reviewValSchema), async (req, res, next) => {
+	try {
+		const camp = await Campground.findById(req.params.id);
+		const review = new Review(req.body.review);
+		camp.reviews.push(review);
+
+		Promise.all([review.save(), camp.save()]);
+
+		res.redirect(`/campgrounds/${camp.id}`);
+	} catch (err) {
+		next(err);
+	}
+});
+
+app.delete("/campgrounds/:id/reviews/:review_id", async (req, res, next) => {
+	try {
+		const { id, review_id } = req.params;
+		await Campground.findByIdAndUpdate(id, { $pull: { reviews: review_id } });
+		await Review.findByIdAndDelete(review_id);
+		res.redirect(`/campgrounds/${id}`);
+	} catch (err) {
+		next(err);
+	}
+});
+
+//////////////////
+// Error Handilng
+//////////////////
 
 // 404
 app.all("*", (req, res, next) => {

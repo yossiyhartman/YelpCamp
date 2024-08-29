@@ -21,6 +21,7 @@ const sampleCities = (num = 20) => {
 		const citySample = cities.splice(sampleArr(cities), 1)[0];
 
 		samples.push({
+			author: "66ce2173f9d30d47163e15f3",
 			location: `${citySample.city}, ${citySample.state}`,
 			title: `${sampleArr(descriptors)} ${sampleArr(places)}`,
 			image: `https://picsum.photos/600/400?random=${Math.random()}`,

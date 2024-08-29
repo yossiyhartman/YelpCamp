@@ -1,0 +1,21 @@
+<% layout('layouts/boilerplate')%>
+
+
+<div class="flex max-w-3xl mx-auto overflow-hidden justify-between rounded-xl shadow-md border">
+
+    <form class="p-5 min-w-80 w-full" action="/login" method="post">
+        <h1 class="text-xl font-bold uppercase text-gray-900">Login</h1>
+
+        <!-- username -->
+        <label class="text-sm block mt-4" for="username" >Username</label>
+        <input class="ring-1 rounded-sm ring-black w-full mt-2 min-h-7 text-gray-500 text-xs pl-4 focus:ring-blue-400" id="username" name="username" type="text" placeholder="#### ...">
+
+        <!-- Password -->
+        <label class="text-sm block mt-4" for="password" >Password</label>
+        <input class="ring-1 rounded-sm ring-black w-full mt-2 min-h-7 text-gray-500 text-xs pl-4 focus:ring-blue-400" id="password" name="password" type="password" placeholder="#### ...">
+
+        <button class="text-sm block bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 mt-6 rounded-md font-medium ">Login</button>
+    </form>
+
+    <img class="object-cover h-full w-full origin-center" src="https://picsum.photos/600/400?random=0.459384392" alt="">
+</div>

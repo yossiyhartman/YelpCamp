@@ -8,6 +8,10 @@ const reviewsSchema = new Schema({
 	rating: {
 		type: Number,
 		enum: [1, 2, 3, 4, 5]
+	},
+	author: {
+		type: Schema.Types.ObjectId,
+		ref: "User"
 	}
 });
 

@@ -1,4 +1,5 @@
 const Joi = require("joi");
+
 const ExpressError = require("./utils/ExpressError");
 
 module.exports.campgroundValSchema = Joi.object({

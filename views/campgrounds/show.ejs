@@ -1,6 +1,7 @@
 <% layout('layouts/boilerplate')%>
 <div class="max-w-4xl mx-auto px-5">
 	<a class="underline color text-blue-500 mb-5 block" href="/campgrounds">Go back to overview</a>
+	
 	<div class="flex justify-between items-end">
 		<div>
 			<h1 class="font-semibold text-3xl"><%= camp.title %></h1>
@@ -9,19 +10,23 @@
 		<h1 class="text-3xl font-semibold">€<%= camp.price %> <span class="font-normal text-sm text-gray-400">p.day</span></h1>
 	</div>
 	<img class="block mt-5 rounded-lg w-full max-h-96 object-bottom object-cover" src="<%= camp.image%>" alt="" />
-
-	<h3 class="mt-5 font-bold text-lg">About the camp</h3>
+	<p class="mt-5 font-medium text-xs"> Submitted by:<span class="text-blue-600"> <%= camp.author.username %></span></p>
+	<h3 class="mt-2 font-bold text-lg">About the camp</h3>
 	<p class="mt-5 leading-7 text-sm pb-5"><%= camp.description%></p>
 
-	<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-orange-400 hover:bg-orange-500" href="/campgrounds/<%= camp.id %>/edit">Edit campground</a>
-	<form class="inline-block" action="/campgrounds/<%= camp.id %>?_method=DELETE" method="POST">
-		<button class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-red-500 hover:bg-red-600">Delete campground</button>
-	</form>
+	<% if(user && camp.author.equals(user._id)) { %>
+		<a class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-orange-400 hover:bg-orange-500" href="/campgrounds/<%= camp.id %>/edit">Edit campground</a>
+		<form class="inline-block" action="/campgrounds/<%= camp.id %>?_method=DELETE" method="POST">
+			<button class="text-sm text-white rounded-md inline-block mt-4 px-4 py-2 bg-red-500 hover:bg-red-600">Delete campground</button>
+		</form>
+	<%}%>
 </div>
 
-<!-- Reviews: Form -->
 
 <div class="bg-stone-100 mt-10 py-10">
+	
+	<% if(user) { %>
+	<!-- Reviews: Form -->
 	<form id="reviewCampgroundForm" class="max-w-4xl mx-auto px-5 pb-10" action="/campgrounds/<%= camp.id %>/reviews" method="POST" novalidate>
 		<h1 class="text-3xl mb-5">Drop a review!</h1>
 		<div class="mb-5">
@@ -81,13 +86,18 @@
 
 		<button class="text-sm text-white rounded-md inline-block mt-8 px-4 py-2 bg-green-500 hover:bg-green-600">submit review</button>
 	</form>
+	<% } %>
 
 	<!-- Reviews: Display -->
 	<div class="max-w-4xl mx-auto px-5">
-		<h1 class="text-xl mb-5">Others say:</h1>
+		<h1 class="text-xl mb-5 font-semibold">Reviews:</h1>
+		<% if(!camp.reviews.length) {%> 
+			<p class="italic">No reviews yet for this campground</p>
+		<% } else {%> 
 		<%for(let review of camp.reviews) {%>
 		<div class="mx-8 x review mb-5 border-b pb3 last:mb-0 last:border-none bg-gray-200 p-5 rounded-lg relative flex justify-between align-middle">
 			<div>
+				<p class="mb-3 font-medium text-xs"> Review by:<span class="text-blue-600"> <%= review.author.username %></span></p>
 				<div class="flex mb-2">
 					<%for(let i = 1; i <= 5; i++ ) { %>
 					<div class="text-<%=(i <= review.rating) ? 'yellow' : 'gray' %>-300">
@@ -101,22 +111,26 @@
 				</div>
 				<p class="italic"><%= review.review%></p>
 			</div>
+				<% if(user && review.author.equals(user._id)) { %>
 			<form class="flex flex-col justify-around" method="POST" action="/campgrounds/<%= camp.id %>/reviews/<%= review.id %>?_method=DELETE">
 				<button class="text-xs text-white rounded-md inline-block px-2 py-2 bg-red-500 hover:bg-red-600">Delete</button>
 			</form>
+				<%}%>
 		</div>
-		<%}%>
+		<%}}%>
 	</div>
 </div>
 
 <script>
 	const form = document.getElementById("reviewCampgroundForm");
-
-	form.addEventListener("submit", (e) => {
-		if (!form.checkValidity()) {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-		form.classList.add("validated");
-	});
+	
+	if(form) {
+		form.addEventListener("submit", (e) => {
+			if (!form.checkValidity()) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+			form.classList.add("validated");
+		});
+	}	
 </script>

@@ -1,6 +1,8 @@
 const navbarButton = document.getElementById("navbar-button");
-const navbar = document.getElementById("navbar-sticky");
+const navbar1 = document.getElementById("navbar-sticky-1");
+const navbar2 = document.getElementById("navbar-sticky-2");
 
 navbarButton.addEventListener("click", () => {
-	navbar.classList.toggle("hidden");
+	navbar1.classList.toggle("hidden");
+	navbar2.classList.toggle("hidden");
 });

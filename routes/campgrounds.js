@@ -8,8 +8,10 @@ const Campground = require("../models/camgrounds");
 // Validation
 const { campgroundValSchema, validateForm } = require("../validationSchemas");
 
-// Routes
+// middleware
+const { loggedIn, isAuthor } = require("../middleware");
 
+// Routes
 router.get("", async (req, res) => {
 	try {
 		const campgrounds = await Campground.find();
@@ -20,41 +22,56 @@ router.get("", async (req, res) => {
 });
 
 // New campground page
-router.get("/new", (req, res) => {
+router.get("/new", loggedIn, (req, res) => {
 	res.render("campgrounds/new");
 });
 
 // Create campground
-router.post("/new", validateForm(campgroundValSchema), async (req, res, next) => {
+router.post("/new", loggedIn, validateForm(campgroundValSchema), async (req, res, next) => {
 	try {
 		const camp = new Campground(req.body.campground);
+		camp.author = req.user.id;
+
 		camp.save();
-		req.flash("flash", ["Succesfully made a campground!", "bg-emerald-600"]);
+		req.flash("success", "Succesfully made a campground!");
 		res.redirect(`/campgrounds/${camp.id}`);
 	} catch (err) {
 		next(err);
 	}
 });
 
-// Update campground page
-router.get("/:id/edit", async (req, res, next) => {
+// Update campground
+router.patch("/:id/edit", loggedIn, isAuthor, validateForm(campgroundValSchema), async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		const camp = await Campground.findById(id);
-		res.render("campgrounds/edit", { camp });
+		await Campground.findByIdAndUpdate(id, req.body);
+		req.flash("success", "Succesfully updated a campground!");
+		res.redirect(`/campgrounds/${id}`);
 	} catch (err) {
-		req.flash("flash", ["No camp was found with that id!", "bg-amber-500"]);
-		res.redirect("/campgrounds");
+		next(err);
 	}
 });
 
-// Update campground
-router.patch("/:id/edit", validateForm(campgroundValSchema), async (req, res, next) => {
+// Update campground page
+router.get("/:id/edit", loggedIn, isAuthor, async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		await Campground.findByIdAndUpdate(id, req.body.campground);
-		req.flash("flash", ["Succesfully updated a campground!", "bg-emerald-600"]);
-		res.redirect(`/campgrounds/${id}`);
+		const camp = await Campground.findById(id);
+
+		res.render("campgrounds/edit", { camp });
+	} catch (err) {
+		req.flash("error", "Cannot find that campground");
+		return res.redirect("/campgrounds");
+	}
+});
+
+//  Delete campground
+router.delete("/:id", loggedIn, isAuthor, async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		await Campground.findByIdAndDelete(id);
+		req.flash("success", "Succesfully deleted a campground!");
+		res.redirect("/campgrounds");
 	} catch (err) {
 		next(err);
 	}
@@ -64,24 +81,16 @@ router.patch("/:id/edit", validateForm(campgroundValSchema), async (req, res, ne
 router.get("/:id", async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		const camp = await Campground.findById(id).populate("reviews");
-
+		const camp = await Campground.findById(id)
+			.populate({
+				path: "reviews",
+				populate: "author"
+			})
+			.populate("author");
 		res.render("campgrounds/show", { camp });
 	} catch (err) {
-		req.flash("flash", ["No camp was found with that id!", "bg-amber-500"]);
+		req.flash("error", "No camp was found with that id!");
 		res.redirect("/campgrounds");
-	}
-});
-
-//  Delete campground
-router.delete("/:id", async (req, res, next) => {
-	try {
-		const { id } = req.params;
-		await Campground.findByIdAndDelete(id);
-		req.flash("flash", ["Succesfully deleted a campground!", "bg-emerald-600"]);
-		res.redirect("/campgrounds");
-	} catch (err) {
-		next(err);
 	}
 });
 

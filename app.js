@@ -6,19 +6,21 @@ const express = require("express");
 const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
-const ExpressError = require("./utils/ExpressError");
 const session = require("express-session");
 const flash = require("connect-flash");
 
-// Modles
-const Campground = require("./models/camgrounds");
-const Review = require("./models/reviews");
+// passport
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+
+// Models
+const User = require("./models/users");
 
 // Validation schemas
 const Joi = require("joi");
-const { campgroundValSchema, reviewValSchema, validateForm } = require("./validationSchemas");
 
 // Routes
+const router_authentication = require("./routes/authentication");
 const router_campgrounds = require("./routes/campgrounds");
 const router_reviews = require("./routes/reviews");
 const router_errorHandling = require("./routes/errorHandling");
@@ -51,18 +53,31 @@ app.use(
 	session({
 		secret: "secret",
 		resave: false,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 7, // miliseconds * seconds * minutes * hours * week
-			httpOnly: true
+			httpOnly: true,
+			maxAge: 1000 * 60 * 60 * 24 * 7 // miliseconds * seconds * minutes * hours * week
 		}
 	})
 );
 
 // Flash
 app.use(flash());
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
-	res.locals.flash_message = req.flash("flash");
+	res.locals.user = req.user;
+	res.locals.success = req.flash("success");
+	res.locals.error = req.flash("error");
+	res.locals.warning = req.flash("warning");
+
 	next();
 });
 
@@ -75,6 +90,7 @@ app.get("/", (req, res) => {
 // Routes
 //////////////////
 
+app.use("", router_authentication);
 app.use("/campgrounds", router_campgrounds);
 app.use("", router_reviews);
 app.use("", router_errorHandling);

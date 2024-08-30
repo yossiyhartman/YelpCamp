@@ -1,19 +1,3 @@
-I'd be happy to help you write a professional and readable README for your GitHub repository! A well-structured README typically includes the following sections:
-
-1. **Title and Description**: Briefly describe the project.
-2. **Table of Contents**: Helpful for longer README files.
-3. **Features**: Highlight key features of the project.
-4. **Installation and Setup**: Step-by-step guide on how to set up the project locally.
-5. **Usage**: Instructions on how to use the project.
-6. **Technologies Used**: Mention the stack and tools used.
-7. **Contributing**: Guidelines for contributing to the project.
-8. **License**: State the license under which the project is released.
-9. **Acknowledgements**: Any credits or acknowledgments (like mentioning the Udemy course).
-
-Here is a draft README for your GitHub repository:
-
----
-
 # Web Developer Bootcamp Final Project
 
 This repository contains the final project of the **Web Developer Bootcamp** course by Colt Steele on Udemy. This project showcases a full-stack web application built using modern web development technologies, including HTML, CSS (TailwindCSS), JavaScript, Node.js, Express.js, EJS, and MongoDB.
